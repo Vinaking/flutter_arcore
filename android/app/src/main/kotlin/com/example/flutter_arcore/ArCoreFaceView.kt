@@ -3,6 +3,7 @@ package com.example.flutter_arcore
 import android.app.Activity
 import android.app.Application
 import android.content.Context
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -14,12 +15,14 @@ import com.google.ar.core.exceptions.UnavailableException
 import com.google.ar.sceneform.ArSceneView
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.Scene
+import com.google.ar.sceneform.rendering.ModelRenderable
 import com.google.ar.sceneform.rendering.Renderable
 import com.google.ar.sceneform.rendering.Texture
 import com.google.ar.sceneform.ux.AugmentedFaceNode
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.platform.PlatformView
+import java.io.File
 
 class ArCoreFaceView(private val activity: Activity, context: Context, id: Int):
     PlatformView, MethodChannel.MethodCallHandler {
@@ -47,13 +50,21 @@ class ArCoreFaceView(private val activity: Activity, context: Context, id: Int):
             run {
                 val faceList = arSceneView?.session?.getAllTrackables(AugmentedFace::class.java)
 
-                Log.d("ArCoreFaceView", "face: start")
                 faceList?.let {
                     for (face in faceList) {
                         Log.d("ArCoreFaceView", "face: ${face.meshVertices}")
                         if (!faceNodeMap.containsKey(face)) {
                             val faceNode = AugmentedFaceNode(face)
                             faceNode.setParent(scene)
+
+                            ModelRenderable.builder()
+                                .setSource(activity, R.raw.fox_face)
+                                .build()
+                                .thenAccept { modelRenderable ->
+                                    faceNode.faceRegionsRenderable = modelRenderable
+                                    modelRenderable.isShadowCaster = false
+                                    modelRenderable.isShadowReceiver = false
+                                }
 
                             //give the face a little blush
                             Texture.builder()
