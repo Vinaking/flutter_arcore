@@ -70,9 +70,15 @@ dependencies {
 //    implementation 'com.google.ar.sceneform:core:1.17.1'
     implementation 'com.google.ar.sceneform.ux:sceneform-ux:1.17.1'
 
+    // tensorflow
+    implementation 'org.tensorflow:tensorflow-lite-task-vision:0.4.0'
+    // Import the GPU delegate plugin Library for GPU inference
+    implementation 'org.tensorflow:tensorflow-lite-gpu-delegate-plugin:0.4.0'
+    implementation 'org.tensorflow:tensorflow-lite-gpu:2.9.0'
+
 }
 
 sceneform.asset('sampledata/models/fox_face.fbx',
-        'sampledata/models/fox_face_material.mat',
+        'default',
         'sampledata/models/fox_face.sfa',
         'src/main/res/raw/fox_face')
